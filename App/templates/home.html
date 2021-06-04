@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Share</title>
+</head>
+
+<body>
+    <div>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                <div>
+                    {{ message }}
+                </div>
+                {% endfor %}
+            {% endif %}
+            {% endwith %}
+        {% block content %}{% endblock %}
+    </div>
+
+    {% for f in files %}
+        <form method="GET" action="/download/{{ f.id }}">
+            <label>{{ f.filename }}</label>
+            <input type="submit" value="Download">
+        </form>
+    {% endfor %}
+
+    <form method="POST" enctype="multipart/form-data" action="/">
+        <label>Upload Your File: </label>
+        <input type="file" name="file">
+        <input type="submit">
+    </form>
+</body>
+
+</html>
