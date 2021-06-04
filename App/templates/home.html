@@ -5,35 +5,100 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.2/css/bulma.min.css">
     <title>File Share</title>
 </head>
 
 <body>
-    <div>
-        {% with messages = get_flashed_messages(with_categories=true) %}
+    <div class="container is-widescreen">
+        <section class="hero is-primary">
+            <div class="hero-body">
+                <p class="title">
+                Maxwell's File Share
+                </p>
+                <p class="subtitle">
+                A simple file sharing solution built using Python3+Flask
+                </p>
+            </div>
+        </section>
+
+        <div>
+            {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
-                {% for category, message in messages %}
-                <div>
-                    {{ message }}
-                </div>
-                {% endfor %}
+            {% for category, message in messages %}
+            <div>
+                {{ message }}
+            </div>
+            {% endfor %}
             {% endif %}
             {% endwith %}
-        {% block content %}{% endblock %}
+            {% block content %}{% endblock %}
+        </div>
+        
+        <section class="section">
+            <form method="POST" enctype="multipart/form-data" action="/">
+                <!-- <input type="file" name="file"> -->
+                <div class="field is-horizontal">
+                    <div class="field-label is-normal">
+                        <label class="label">Upload Your File: </label>
+                    </div>
+                    <div class="field-body">
+                        <div class="field is-grouped">
+                            <div class="control">
+                                <div id="file-js-example" class="file has-name">
+                                    <label class="file-label">
+                                        <input class="file-input" type="file" name="file">
+                                        <span class="file-cta">
+                                        <span class="file-label">
+                                            Choose a file…
+                                        </span>
+                                        </span>
+                                        <span class="file-name">filename</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="control">
+                                <input type="submit" class="button is-primary" value="upload">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </section>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Filename</th>
+                    <th>Download</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for f in files %}
+                    <tr>
+                        <th>
+                            <span class="is-family-monospace has-text-weight-semibold">{{ f.filename }}</span>
+                        </th>
+                        <th>
+                            <form method="GET" action="/download/{{ f.id }}">
+                                <input type="submit" class="button is-light" value="Download">
+                            </form>
+                        </th>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 
-    {% for f in files %}
-        <form method="GET" action="/download/{{ f.id }}">
-            <label>{{ f.filename }}</label>
-            <input type="submit" value="Download">
-        </form>
-    {% endfor %}
-
-    <form method="POST" enctype="multipart/form-data" action="/">
-        <label>Upload Your File: </label>
-        <input type="file" name="file">
-        <input type="submit">
-    </form>
+    <script>
+        const fileInput = document.querySelector('#file-js-example input[type=file]');
+        fileInput.onchange = () => {
+            if (fileInput.files.length > 0) {
+            const fileName = document.querySelector('#file-js-example .file-name');
+            fileName.textContent = fileInput.files[0].name;
+            }
+        }
+    </script>
 </body>
 
 </html>
