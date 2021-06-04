@@ -1,3 +1,4 @@
+import os
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
@@ -7,3 +8,6 @@ app.config["SQLALCHEMY_DATABASE_URI"] = 'sqlite:///site.db'
 db = SQLAlchemy(app)
 
 from App import routes
+
+if (not os.path.exists("site.db")):
+    db.create_all()
