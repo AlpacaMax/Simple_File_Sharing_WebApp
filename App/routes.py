@@ -1,3 +1,4 @@
+import datetime
 from flask import render_template, request, flash, redirect, url_for
 from werkzeug.utils import secure_filename
 from werkzeug.wrappers import Response
@@ -23,7 +24,11 @@ def home():
             filename = secure_filename(file.filename)
             file_bytes = b''
             for byte in file: file_bytes += byte
-            new_file = File(filename=filename, file=file_bytes)
+            new_file = File(
+                filename=filename, 
+                file=file_bytes, 
+                datetime_added=datetime.datetime.now()
+            )
             db.session.add(new_file)
             db.session.commit()
 

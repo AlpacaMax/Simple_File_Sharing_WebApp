@@ -11,10 +11,10 @@
 
 <body>
     <div class="container is-widescreen">
-        <section class="hero is-primary">
+        <section class="block hero is-primary">
             <div class="hero-body">
                 <p class="title">
-                Maxwell's File Share
+                AlpacaMax's File Share
                 </p>
                 <p class="subtitle">
                 A simple file sharing solution built using Python3+Flask
@@ -22,22 +22,21 @@
             </div>
         </section>
 
-        <div>
+        <section class="block">
             {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
             {% for category, message in messages %}
-            <div>
+            <div class="notification is-danger">
                 {{ message }}
             </div>
             {% endfor %}
             {% endif %}
             {% endwith %}
             {% block content %}{% endblock %}
-        </div>
+        </section>
         
-        <section class="section">
+        <section class="block">
             <form method="POST" enctype="multipart/form-data" action="/">
-                <!-- <input type="file" name="file"> -->
                 <div class="field is-horizontal">
                     <div class="field-label is-normal">
                         <label class="label">Upload Your File: </label>
@@ -66,34 +65,46 @@
             </form>
         </section>
 
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Filename</th>
-                    <th>Download</th>
-                    <th>Delete</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for f in files %}
+        {% if files %}
+            <table class="table is-striped">
+                <thead>
                     <tr>
-                        <th>
-                            <span class="is-family-monospace has-text-weight-semibold">{{ f.filename }}</span>
-                        </th>
-                        <th>
-                            <form method="GET" action="/download/{{ f.id }}">
-                                <input type="submit" class="button is-light" value="Download">
-                            </form>
-                        </th>
-                        <th>
-                            <form method="POST" action="/delete/{{ f.id }}">
-                                <input type="submit" class="button is-danger" value="Delete">
-                            </form>
-                        </th>
+                        <th>Filename</th>
+                        <th>Added</th>
+                        <th>Download</th>
+                        <th>Delete</th>
                     </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    {% for f in files %}
+                        <tr>
+                            <th>
+                                <span class="is-family-monospace has-text-weight-semibold">{{ f.filename }}</span>
+                            </th>
+                            <th>
+                                <span class="is-family-monospace has-text-grey-light">
+                                    {{ f.datetime_added.strftime("%m/%d/%Y at %H:%M") }}
+                                </span>
+                            </th>
+                            <th>
+                                <form method="GET" action="/download/{{ f.id }}">
+                                    <input type="submit" class="button is-light" value="Download">
+                                </form>
+                            </th>
+                            <th>
+                                <form method="POST" action="/delete/{{ f.id }}">
+                                    <input type="submit" class="button is-danger" value="Delete">
+                                </form>
+                            </th>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <div class="notification">
+                <span>No file in the database. Upload your first file!</span>
+            </div>
+        {% endif %}
     </div>
 
     <script>
