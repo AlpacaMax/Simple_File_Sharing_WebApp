@@ -1,4 +1,4 @@
-from flask import render_template, request, flash, redirect
+from flask import render_template, request, flash, redirect, url_for
 from werkzeug.utils import secure_filename
 from werkzeug.wrappers import Response
 from werkzeug.datastructures import Headers
@@ -27,17 +27,35 @@ def home():
             db.session.add(new_file)
             db.session.commit()
 
-    files = File.query.all()
+    files = File.query.order_by(File.filename).all()
     return render_template("home.html", files=files)
 
 @app.route("/download/<int:id>", methods=["GET"])
 def download(id):
     the_file = File.query.get(id)
+
+    if (the_file is None):
+        flash("File does not exist!")
+        return redirect(url_for("home"))
+
     headers = Headers()
     headers.add("Content-Disposition", "attachment", filename=the_file.filename)
 
-    return  Response(
+    return Response(
         the_file.file, 
         headers=headers, 
         mimetype="application/octet-stream"
     )
+
+@app.route("/delete/<int:id>", methods=["POST"])
+def delete(id):
+    the_file = File.query.get(id)
+
+    if (the_file is None):
+        flash("File does not exist!")
+        return redirect(url_for("home"))
+
+    db.session.delete(the_file)
+    db.session.commit()
+
+    return redirect(url_for("home"))

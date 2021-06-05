@@ -71,6 +71,7 @@
                 <tr>
                     <th>Filename</th>
                     <th>Download</th>
+                    <th>Delete</th>
                 </tr>
             </thead>
             <tbody>
@@ -82,6 +83,11 @@
                         <th>
                             <form method="GET" action="/download/{{ f.id }}">
                                 <input type="submit" class="button is-light" value="Download">
+                            </form>
+                        </th>
+                        <th>
+                            <form method="POST" action="/delete/{{ f.id }}">
+                                <input type="submit" class="button is-danger" value="Delete">
                             </form>
                         </th>
                     </tr>
